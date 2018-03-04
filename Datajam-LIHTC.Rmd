@@ -1,0 +1,79 @@
+---
+title: "NC State Datajam"
+author: "Walt DeGrange"
+date: "March 3, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r Libraries}
+library(magrittr)
+library(ggplot2)
+library(dplyr)
+library(kableExtra)
+library(knitr)
+library(formattable)
+```
+
+```{r Data Import}
+Demographic <- read.csv("LIHTC-Demographic.csv")
+Demographic %<>% rename(Neighborhood = "ï..Neighborhood")
+Value <- read.csv("LIHTC-Value.csv")
+Value %<>% rename(Neighborhood = "ï..Neighborhood")
+Numbers <- read.csv("LIHTC-Number.csv")
+Numbers %<>% rename(Neighborhood = "ï..Neighborhood")
+```
+
+```{r Demo Analysis}
+
+Change <- 0.5
+
+Demographic$Median.Income..2000. <- currency(Demographic$Median.Income..2000.,digits = 0)
+
+Demographic$Median.Income..2010. <- currency(Demographic$Median.Income..2010.,digits = 0)
+
+Demographic$Median.Income..2015. <- currency(Demographic$Median.Income..2015.,digits = 0)
+
+Demographic %>% filter((Median.Income..2000.*Change > Median.Income..2010. | Median.Income..2000.*Change > Median.Income..2015.) & City == "Charlotte") %>% select(Neighborhood,City,Median.Income..2000., Median.Income..2010., Median.Income..2015.) %>% kable("html") %>% kable_styling(bootstrap_options = "striped", full_width = F) 
+
+
+
+```
+
+```{r Analysis}
+
+Value %<>% mutate(Difference = Dec.17-Jan.97, Grps = "A")
+
+Value %<>% filter(!is.na(Difference))
+
+Value$Grps[Value$Jan.97 > quantile(Value$Jan.97,0.50,na.rm = TRUE) & Value$Jan.97 <= quantile(Value$Jan.97,0.75,na.rm = TRUE)] <- "B"
+
+Value$Grps[Value$Jan.97 > quantile(Value$Jan.97,0.25,na.rm = TRUE) & Value$Jan.97 <= quantile(Value$Jan.97,0.50,na.rm = TRUE)] <- "C"
+
+Value$Grps[Value$Jan.97 <= quantile(Value$Jan.97,0.24,na.rm = TRUE)] <- "D"
+
+Value$LIHTC.Present...0...No..1...Yes. <- as.character(Value$LIHTC.Present...0...No..1...Yes.)
+
+Value %<>% rename("LIHTC" = "LIHTC.Present...0...No..1...Yes.")
+
+Value %>% ggplot(aes(x=Grps,y=Difference))
++ geom_boxplot()
+# + facet_grid(. ~ LIHTC)
+
+Value %>% ggplot(aes(x=LIHTC,y=Difference))
++ geom_boxplot()
++ facet_grid(. ~ Grps)
+
+Value %>% ggplot(aes(x=Grps,y=Difference))
++ geom_bar()
++ facet_grid(. ~ Grps)
+
+Demographic %>% filter(Population..2000. > 9000) %>%    ggplot(aes(x=Neighborhood,y=Population..2000.))
++ geom_col()
+```
+

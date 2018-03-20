@@ -10,5 +10,5 @@ Results of some of the analysis done:
 * Relative Growth of Neighborhoods that received LIHTC in 2006: https://ncopenpass.github.io/nchfa/DG-RelativeGrowth.png
 * Projects in 2016: https://ncopenpass.github.io/nchfa/DG-Animation2016.png
 * Median Property Values Animation: https://ncopenpass.github.io/nchfa/DG-NCHousing.mp4
-* Median Income: https://ncopenpass.github.io/nchfa/Datajam-LIHTC.html
+* Median Income inconsistencies over the three censuses: https://ncopenpass.github.io/nchfa/Datajam-LIHTC.html
 * Statistical Analysis: https://ncopenpass.github.io/nchfa/LIHTC_Analysis.html
